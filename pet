@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>圖片養寵物英語發音學習網站</title>
+<style>
+body{
+  margin:0;
+  font-family:"Microsoft JhengHei",Arial,sans-serif;
+  background:linear-gradient(135deg,#fff7ed,#e0f2fe,#fce7f3);
+  color:#333;
+}
+header,main,section,article,aside,footer{
+  box-sizing:border-box;
+}
+header{
+  text-align:center;
+  padding:34px 15px;
+  background:#ffffffcc;
+  border-bottom:5px solid #f9a8d4;
+}
+h1{
+  margin:0;
+  color:#ec4899;
+}
+h2{
+  color:#2563eb;
+}
+main{
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+}
+section,article,aside{
+  background:#ffffffdd;
+  border-radius:22px;
+  padding:18px;
+  margin:18px 0;
+  box-shadow:0 8px 22px #00000018;
+}
+label{
+  display:block;
+  margin:12px 0;
+}
+input,select,button,textarea{
+  width:100%;
+  box-sizing:border-box;
+  font-size:16px;
+  border-radius:14px;
+  border:2px solid #f9a8d4;
+  padding:12px;
+  margin-top:8px;
+}
+textarea{
+  min-height:90px;
+  resize:vertical;
+}
+button{
+  background:#ec4899;
+  color:white;
+  border:none;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:hover{
+  background:#db2777;
+}
+button.blue{
+  background:#3b82f6;
+}
+button.green{
+  background:#22c55e;
+}
+button.yellow{
+  background:#f59e0b;
+}
+button.purple{
+  background:#8b5cf6;
+}
+img,canvas{
+  width:100%;
+  max-width:100%;
+  border-radius:18px;
+  background:#fff;
+}
+progress{
+  width:100%;
+  height:24px;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  margin-top:12px;
+}
+th,td{
+  border:1px solid #f9a8d4;
+  padding:10px;
+  text-align:center;
+}
+th{
+  background:#fce7f3;
+}
+.pet-face{
+  font-size:76px;
+  text-align:center;
+}
+.status{
+  font-weight:bold;
+  color:#ec4899;
+}
+.good{
+  color:#16a34a;
+  font-weight:bold;
+}
+.bad{
+  color:#dc2626;
+  font-weight:bold;
+}
+footer{
+  text-align:center;
+  padding:22px;
+  color:#666;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>圖片養寵物英語發音學習網站</h1>
+  <p>上傳圖片、餵養寵物、學英文單字、播放發音、完成測驗升級</p>
+</header>
+
+<main>
+
+<section>
+  <h2>一、上傳你的寵物圖片</h2>
+  <label>
+    選擇圖片
+    <input id="imageInput" type="file" accept="image/*">
+  </label>
+  <canvas id="petCanvas" width="800" height="500"></canvas>
+  <p id="uploadText">尚未上傳圖片，會先使用可愛預設寵物。</p>
+</section>
+
+<section>
+  <h2>二、我的英語學習寵物</h2>
+  <article>
+    <p class="pet-face" id="petEmoji">🐶</p>
+    <label>
+      幫寵物取名字
+      <input id="petName" type="text" value="Lucky">
+    </label>
+    <p class="status" id="petStatus">Lucky 正在等你學英文！</p>
+
+    <p>飽食度</p>
+    <progress id="foodBar" value="50" max="100"></progress>
+
+    <p>快樂度</p>
+    <progress id="happyBar" value="50" max="100"></progress>
+
+    <p>英語經驗值</p>
+    <progress id="expBar" value="0" max="100"></progress>
+
+    <p id="levelText">等級：1</p>
+  </article>
+
+  <button class="green" onclick="feedPet()">餵食 Feed</button>
+  <button class="yellow" onclick="playWithPet()">玩耍 Play</button>
+  <button class="purple" onclick="studyEnglish()">學英文 Study</button>
+</section>
+
+<section>
+  <h2>三、英語發音學習卡</h2>
+  <article id="wordCard">
+    <h3 id="wordTitle">cat</h3>
+    <p id="kkText">KK：/kæt/</p>
+    <p id="meaningText">中文：貓</p>
+    <p id="sentenceText">例句：The cat is cute.</p>
+  </article>
+
+  <button onclick="speakWord()">播放單字發音</button>
+  <button class="blue" onclick="speakSentence()">播放例句</button>
+  <button class="green" onclick="nextWord()">下一張單字卡</button>
+</section>
+
+<section>
+  <h2>四、跟讀練習</h2>
+  <p>請按播放後，自己跟著唸：單字 → 例句 → 再餵寵物。</p>
+  <textarea id="practiceNote" placeholder="可以記錄今天練習的單字，例如：cat, dog, apple"></textarea>
+  <button onclick="savePractice()">儲存練習紀錄</button>
+  <article id="practiceList">尚未儲存紀錄。</article>
+</section>
+
+<section>
+  <h2>五、英語小測驗</h2>
+  <p id="quizQuestion">按下開始測驗，幫寵物賺經驗值。</p>
+  <button onclick="startQuiz()">開始測驗</button>
+  <section id="quizOptions"></section>
+  <p id="quizResult"></p>
+</section>
+
+<aside>
+  <h2>六、今日學習單字表</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>英文</th>
+        <th>KK 音標</th>
+        <th>中文</th>
+        <th>例句</th>
+      </tr>
+    </thead>
+    <tbody id="wordTable"></tbody>
+  </table>
+</aside>
+
+</main>
+
+<footer>
+  <p>本網站使用瀏覽器內建語音功能，不需要外掛。</p>
+</footer>
+
+<script>
+const words = [
+  {word:"cat",kk:"/kæt/",meaning:"貓",sentence:"The cat is cute."},
+  {word:"dog",kk:"/dɔɡ/",meaning:"狗",sentence:"The dog can run."},
+  {word:"apple",kk:"/ˈæpl/",meaning:"蘋果",sentence:"I eat an apple."},
+  {word:"book",kk:"/bʊk/",meaning:"書",sentence:"This is my book."},
+  {word:"fish",kk:"/fɪʃ/",meaning:"魚",sentence:"The fish can swim."},
+  {word:"bird",kk:"/bɝd/",meaning:"鳥",sentence:"The bird can sing."},
+  {word:"happy",kk:"/ˈhæpɪ/",meaning:"開心",sentence:"I am happy today."},
+  {word:"water",kk:"/ˈwɔtɚ/",meaning:"水",sentence:"I drink water."},
+  {word:"school",kk:"/skul/",meaning:"學校",sentence:"I go to school."},
+  {word:"dream",kk:"/drim/",meaning:"夢想",sentence:"I have a big dream."}
+];
+
+const imageInput = document.getElementById("imageInput");
+const canvas = document.getElementById("petCanvas");
+const ctx = canvas.getContext("2d");
+
+let uploadedImage = null;
+let currentWordIndex = 0;
+let food = Number(localStorage.getItem("petFood") || 50);
+let happy = Number(localStorage.getItem("petHappy") || 50);
+let exp = Number(localStorage.getItem("petExp") || 0);
+let level = Number(localStorage.getItem("petLevel") || 1);
+let currentQuiz = null;
+
+imageInput.addEventListener("change",function(){
+  const file = imageInput.files[0];
+
+  if(!file){
+    return;
+  }
+
+  const reader = new FileReader();
+
+  reader.onload = function(event){
+    uploadedImage = new Image();
+
+    uploadedImage.onload = function(){
+      document.getElementById("uploadText").textContent = "圖片已上傳，這就是你的學習寵物！";
+      drawPet();
+    };
+
+    uploadedImage.src = event.target.result;
+  };
+
+  reader.readAsDataURL(file);
+});
+
+function drawPet(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const gradient = ctx.createLinearGradient(0,0,canvas.width,canvas.height);
+  gradient.addColorStop(0,"#fce7f3");
+  gradient.addColorStop(1,"#dbeafe");
+  ctx.fillStyle = gradient;
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+
+  if(uploadedImage){
+    const ratio = uploadedImage.width / uploadedImage.height;
+    let w = canvas.width * 0.65;
+    let h = w / ratio;
+
+    if(h > canvas.height * 0.75){
+      h = canvas.height * 0.75;
+      w = h * ratio;
+    }
+
+    const x = (canvas.width - w) / 2;
+    const y = (canvas.height - h) / 2;
+
+    ctx.drawImage(uploadedImage,x,y,w,h);
+  }else{
+    ctx.font = "150px serif";
+    ctx.textAlign = "center";
+    ctx.fillText("🐶",canvas.width / 2,canvas.height / 2 + 45);
+  }
+
+  ctx.fillStyle = "rgba(255,255,255,0.8)";
+  ctx.fillRect(40,canvas.height - 90,canvas.width - 80,55);
+
+  ctx.fillStyle = "#ec4899";
+  ctx.font = "28px Microsoft JhengHei";
+  ctx.textAlign = "center";
+  ctx.fillText("Learn English With My Pet",canvas.width / 2,canvas.height - 55);
+}
+
+function updatePet(){
+  const name = document.getElementById("petName").value || "Lucky";
+
+  document.getElementById("foodBar").value = food;
+  document.getElementById("happyBar").value = happy;
+  document.getElementById("expBar").value = exp;
+  document.getElementById("levelText").textContent = "等級：" + level;
+
+  let mood = "正在等你學英文！";
+
+  if(food < 25){
+    mood = "有點餓了，請餵我吃東西！";
+  }else if(happy < 25){
+    mood = "想跟你玩，也想聽你唸英文！";
+  }else if(exp > 70){
+    mood = "快升級了，繼續學英文！";
+  }
+
+  document.getElementById("petStatus").textContent = name + " " + mood;
+
+  localStorage.setItem("petFood",food);
+  localStorage.setItem("petHappy",happy);
+  localStorage.setItem("petExp",exp);
+  localStorage.setItem("petLevel",level);
+
+  drawPet();
+}
+
+function feedPet(){
+  food = Math.min(food + 15,100);
+  happy = Math.min(happy + 5,100);
+  speakText("Yummy! Thank you!");
+  updatePet();
+}
+
+function playWithPet(){
+  happy = Math.min(happy + 15,100);
+  food = Math.max(food - 5,0);
+  speakText("Let's play and learn English!");
+  updatePet();
+}
+
+function studyEnglish(){
+  exp = Math.min(exp + 15,100);
+  food = Math.max(food - 3,0);
+  happy = Math.min(happy + 5,100);
+
+  if(exp >= 100){
+    exp = 0;
+    level++;
+    speakText("Level up! Great job!");
+  }else{
+    speakText("Good job! Keep learning!");
+  }
+
+  updatePet();
+}
+
+function showWord(){
+  const item = words[currentWordIndex];
+
+  document.getElementById("wordTitle").textContent = item.word;
+  document.getElementById("kkText").textContent = "KK：" + item.kk;
+  document.getElementById("meaningText").textContent = "中文：" + item.meaning;
+  document.getElementById("sentenceText").textContent = "例句：" + item.sentence;
+}
+
+function speakText(text){
+  const speech = new SpeechSynthesisUtterance(text);
+  speech.lang = "en-US";
+  speech.rate = 0.8;
+  speech.pitch = 1;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(speech);
+}
+
+function speakWord(){
+  const item = words[currentWordIndex];
+  speakText(item.word);
+  studyEnglish();
+}
+
+function speakSentence(){
+  const item = words[currentWordIndex];
+  speakText(item.sentence);
+  studyEnglish();
+}
+
+function nextWord(){
+  currentWordIndex++;
+
+  if(currentWordIndex >= words.length){
+    currentWordIndex = 0;
+  }
+
+  showWord();
+}
+
+function renderWordTable(){
+  let html = "";
+
+  words.forEach(function(item){
+    html += "<tr><td>" + item.word + "</td><td>" + item.kk + "</td><td>" + item.meaning + "</td><td>" + item.sentence + "</td></tr>";
+  });
+
+  document.getElementById("wordTable").innerHTML = html;
+}
+
+function savePractice(){
+  const note = document.getElementById("practiceNote").value.trim();
+
+  if(note.length === 0){
+    document.getElementById("practiceList").textContent = "請先輸入練習內容。";
+    return;
+  }
+
+  const notes = JSON.parse(localStorage.getItem("practiceNotes") || "[]");
+  const date = new Date().toLocaleDateString();
+
+  notes.unshift({date:date,text:note});
+  localStorage.setItem("practiceNotes",JSON.stringify(notes));
+
+  document.getElementById("practiceNote").value = "";
+  renderPractice();
+}
+
+function renderPractice(){
+  const notes = JSON.parse(localStorage.getItem("practiceNotes") || "[]");
+
+  if(notes.length === 0){
+    document.getElementById("practiceList").textContent = "尚未儲存紀錄。";
+    return;
+  }
+
+  let html = "";
+
+  notes.forEach(function(note,index){
+    html += "<article><h3>紀錄 " + (index + 1) + "｜" + note.date + "</h3><p>" + note.text + "</p></article>";
+  });
+
+  document.getElementById("practiceList").innerHTML = html;
+}
+
+function startQuiz(){
+  currentQuiz = words[Math.floor(Math.random() * words.length)];
+
+  document.getElementById("quizQuestion").textContent = "請選出「" + currentQuiz.meaning + "」的英文單字：";
+  document.getElementById("quizResult").textContent = "";
+
+  const options = [currentQuiz.word];
+
+  while(options.length < 4){
+    const randomWord = words[Math.floor(Math.random() * words.length)].word;
+
+    if(!options.includes(randomWord)){
+      options.push(randomWord);
+    }
+  }
+
+  options.sort(function(){
+    return Math.random() - 0.5;
+  });
+
+  const box = document.getElementById("quizOptions");
+  box.innerHTML = "";
+
+  options.forEach(function(option){
+    const button = document.createElement("button");
+    button.textContent = option;
+    button.onclick = function(){
+      checkQuiz(option);
+    };
+    box.appendChild(button);
+  });
+}
+
+function checkQuiz(option){
+  const result = document.getElementById("quizResult");
+
+  if(option === currentQuiz.word){
+    result.className = "good";
+    result.textContent = "答對了！寵物獲得經驗值。";
+    exp = Math.min(exp + 20,100);
+    happy = Math.min(happy + 10,100);
+    speakText("Correct! Great job!");
+  }else{
+    result.className = "bad";
+    result.textContent = "答錯了，正確答案是：" + currentQuiz.word;
+    happy = Math.max(happy - 5,0);
+    speakText("Try again. The answer is " + currentQuiz.word);
+  }
+
+  if(exp >= 100){
+    exp = 0;
+    level++;
+    speakText("Level up!");
+  }
+
+  updatePet();
+}
+
+drawPet();
+showWord();
+renderWordTable();
+renderPractice();
+updatePet();
+</script>
+
+</body>
+</html>
